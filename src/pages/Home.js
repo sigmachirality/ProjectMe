@@ -12,13 +12,11 @@ class App extends Component {
     return (
       <div>
         <Container is-desktop>
-          <a href="https://github.com/sigmachirality/ProjectMe">
-            <Image
-              title="Check me out on Github!"
-              src={logo}
-              className="logo"
-            />
-          </a>
+          <Image
+            title="Check me out on Github!"
+            src={logo}
+            className="logo"
+          />
           <Columns>
             <Columns.Column size={2} />
             <Columns.Column size={3}>
