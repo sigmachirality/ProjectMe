@@ -14,18 +14,14 @@ class App extends Component {
           className="logo"
         />
         <br />
-        <inline-block>
-          <Select
-            style={{ width: "50vw" }}
-            isClearable
-            isSearchable
-          />
-          <Select
-            style={{ width: "50vw" }}
-            isClearable
-            isSearchable
-          />
-        </inline-block>
+        <Select
+          isClearable
+          isSearchable
+        />
+        <Select
+          isClearable
+          isSearchable
+        />
       </div>
     );
   }
