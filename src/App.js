@@ -16,6 +16,10 @@ class App extends Component {
 
   render() {
     switch (this.state.view) {
+      case "results":
+        return (
+          <Results />
+        )
       default:
         return (
           <Home />
