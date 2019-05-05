@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Home from './pages/Home'
-import { library } from '@fortawesome/fontawesome-svg-core'
+import Home from './pages/Home';
+import Results from './pages/Results';
 
 class App extends Component {
   constructor() {
@@ -8,6 +8,10 @@ class App extends Component {
     this.state = {
       view: "default"
     };
+  }
+
+  goToResults() {
+
   }
 
   render() {
