@@ -17,12 +17,20 @@ class Home extends Component {
       to: ""
     }
     this.loadOptions = this.loadOptions.bind(this);
+    this.loadCards = this.loadOptions.bind(this);
   }
 
   loadOptions(text, callback) {
     Axios.get('/search?query=' + text)
       .then((response) => {
         callback(response);
+      });
+  }
+
+  loadCards() {
+    Axios.get("/path?from=" + this.state.from + "&to=" + this.state.to)
+      .then((response) => {
+        this.props.onSearch(response);
       });
   }
 
@@ -58,6 +66,7 @@ class Home extends Component {
             <Button
               style={{ color: '#1D222C' }}
               fullwidth
+              onClick={this.loadCards}
             >
               Project Me!
               </Button>
