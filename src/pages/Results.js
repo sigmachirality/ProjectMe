@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import 'react-bulma-components/dist/react-bulma-components.min.css';
 import logo from '../assets/logo.png'
-import { Container, Columns, Content } from 'react-bulma-components';
+import { Card, Container, Columns, Content, Image, Media } from 'react-bulma-components';
 
 class Result extends Component {
 
   render() {
     //TODO: Use noun project API to dynamically generate things
-    let cards = this.props.cards.map((card) => {
+    let cards = this.props.cards.map((card) =>
       <Card>
         <Card.Content>
           <Media>
@@ -24,7 +24,7 @@ class Result extends Component {
           </Media>
         </Card.Content>
       </Card>
-    });
+    );
     return (
       <div>
         <Container breakpoint="fullhd">
