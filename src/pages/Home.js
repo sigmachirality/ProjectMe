@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Select from 'react-select'
 import { Button, Container, Content, Columns, Image } from 'react-bulma-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faHeart, faFileCode } from '@fortawesome/free-solid-svg-icons'
 import 'react-bulma-components/dist/react-bulma-components.min.css';
 import '../assets/search.css'
 import logo from '../assets/logo.png'
@@ -53,9 +55,17 @@ class App extends Component {
             <p>
               Made with
               &nbsp;
-              <FontAwesomeIcon style={{ color: '#F56F71' }} icon="heart"> </FontAwesomeIcon>
+              <FontAwesomeIcon style={{ color: '#F56F71' }} icon={faHeart}> </FontAwesomeIcon>
               &nbsp;
               by <a href="https://danxtao.com/">Daniel Tao</a> and <a href="https://github.com/osimon8">Owen Simon</a>
+              &nbsp;&nbsp;|&nbsp;&nbsp;
+              <a className="fa" href="https://github.com/sigmachirality/ProjectMe">
+                <FontAwesomeIcon icon={faGithub} style={{ size: '3rem' }} />
+              </a>
+              &nbsp;&nbsp;
+              <a className="fa" href="https://devpost.com/software/projectme-machine-learning-career-consultant">
+                <FontAwesomeIcon icon={faFileCode} style={{ size: '3rem' }} />
+              </a>
             </p>
           </Content>
         </Container>
