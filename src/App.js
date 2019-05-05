@@ -6,23 +6,35 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      view: "default"
+      view: "home",
+      cards: []
     };
+    this.goToResults = this.goToResults.bind(this);
+    this.goToHome = this.goToHome.bind(this);
   }
 
   goToResults() {
+    this.setState({ view: "results", cards: [] });
+  }
 
+  goToHome(cards) {
+    this.setState({ view: "home", cards: cards });
   }
 
   render() {
     switch (this.state.view) {
       case "results":
         return (
-          <Results />
+          <Results
+            cards={this.state.cards}
+            onHome={this.goToHome}
+          />
         )
       default:
         return (
-          <Home />
+          <Home
+            onSearch={this.goToResults}
+          />
         );
     }
   }
