@@ -42,8 +42,4 @@ class Result extends Component {
   }
 }
 
-Result.propTypes = {
-
-}
-
 export default Result;
