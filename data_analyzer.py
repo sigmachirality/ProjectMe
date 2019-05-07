@@ -1,6 +1,7 @@
 import json
 import os
 import datetime
+from pymagnitude import *
 
 
 
@@ -15,10 +16,24 @@ def parse_year(string):
 		return -1
 
 
-	
+def consolidate():
+	files = os.listdir(data_dir)
+	aggregate = []
 
 
-def main():
+	for f in files:
+		if f == "total.json":
+			continue
+		with open("data" + os.sep + f, mode='r', encoding='utf-8') as file:
+			data = json.load(file)
+			aggregate.extend(data)
+
+	with open("total.json", "w") as file:
+		json.dump(aggregate, file)
+
+
+
+def gen_times():
 	files = os.listdir(data_dir)
 	aggregate = []
 
@@ -49,6 +64,30 @@ def main():
 	with open("total.json", "w") as file:
 		json.dump(aggregate, file)
 
+
+
+def generate_titles():
+	titles = []
+	with open("total.json", mode = "r", encoding ="utf-8") as file:
+		data = json.load(file)
+		for entry in data:
+			titles.extend([(i["title"]) for i in (entry['jobs'])])
+
+	with open("titles.txt", mode = "w", encoding ="utf-8") as file:
+		file.write(("\n").join(titles))
+
+
+def vector_stuff():
+	#vectors = Magnitude("test_titles.txt", stream = True)
+	vecs = Magnitude('http://magnitude.plasticity.ai/word2vec/light/GoogleNews-vectors-negative300.magnitude')
+	for key, vector in vectors:
+		print(key, vector)
+
+
+
+def main():
+	vector_stuff()
+	#generate_titles()
 	# with open("total.json", "r") as file:
 	# 	data = json.load(file)
 	# 	print(data[0])
