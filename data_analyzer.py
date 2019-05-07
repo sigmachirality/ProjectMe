@@ -79,10 +79,17 @@ def generate_titles():
 
 def vector_stuff():
 	#vectors = Magnitude("test_titles.txt", stream = True)
-	vecs = Magnitude('http://magnitude.plasticity.ai/word2vec/light/GoogleNews-vectors-negative300.magnitude')
-	for key, vector in vectors:
-		print(key, vector)
+	vecs = Magnitude('C://Users/Owen/Desktop/GoogleNews-vectors-negative300.magnitude')
 
+	with open("test_titles.txt", "r") as file:
+		titles = [i.strip() for i in file.readlines()]
+
+	for i,t1 in enumerate(titles):
+			print(vecs.distance("_".join(t1.split(" ")), titles[i:]))
+			print(t1, titles[i+1:])
+
+	print(vecs.distance("cat", "dog"))
+	print(vecs.distance("elephant_gun", "pizza_bagel"))
 
 
 def main():
