@@ -38,7 +38,6 @@ class Home extends Component {
     return (
       <Container is-desktop>
         <Image
-          title="Check me out on Github!"
           src={logo}
           className="logo"
         />
