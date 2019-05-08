@@ -4,6 +4,9 @@ from django.views.generic import TemplateView
 
 from . import routes
 
+# Startup data load
+
+
 urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('rest-auth/', include('rest_auth.urls')),
@@ -11,5 +14,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('search/', routes.search_jobs),
     path('path', routes.find_path),
+    path('graph', routes.get_graph),
     re_path(r'^.*', TemplateView.as_view(template_name='index.html'))
 ]
