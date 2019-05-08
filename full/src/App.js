@@ -11,6 +11,7 @@ class App extends Component {
     };
     this.goToResults = this.goToResults.bind(this);
     this.goToHome = this.goToHome.bind(this);
+    this.goToGraph = this.goToGraph.bind(this);
   }
 
   goToResults() {
@@ -21,6 +22,10 @@ class App extends Component {
     this.setState({ view: "home", cards: cards });
   }
 
+  goToGraph() {
+    this.setState({ view: "graph" });
+  }
+
   render() {
     switch (this.state.view) {
       case "results":
@@ -29,11 +34,16 @@ class App extends Component {
             cards={this.state.cards}
             onHome={this.goToHome}
           />
-        )
+        );
+      case "graph":
+        return (
+          <Graph />
+        );
       default:
         return (
           <Home
             onSearch={this.goToResults}
+            onGraph={this.goToGraph}
           />
         );
     }

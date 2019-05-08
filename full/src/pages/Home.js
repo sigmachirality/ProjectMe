@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import AsyncSelect from 'react-select/lib/Async';
+import Select from 'react-select/lib/Async';
 import Axios from 'axios';
 import { Button, Container, Content, Columns, Image } from 'react-bulma-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,14 +14,21 @@ class Home extends Component {
     super();
     this.state = {
       from: "",
-      to: ""
+      to: "",
+      options: []
     }
     this.loadOptions = this.loadOptions.bind(this);
     this.loadCards = this.loadOptions.bind(this);
+    loadOptions((response) => this.setState({
+      options: response.map((obj) => ({
+        value: obj.id,
+        label: obj.name
+      }))
+    }));
   }
 
-  loadOptions(text, callback) {
-    Axios.get('/search?query=' + text)
+  loadOptions(callback) {
+    Axios.get('/search')
       .then((response) => {
         callback(response);
       });
@@ -43,23 +50,23 @@ class Home extends Component {
           className="logo"
         />
         <Columns>
-          <Columns.Column size={2} />
+          <Columns.Column size={1} />
           <Columns.Column size={3}>
-            <AsyncSelect
+            <Select
               placeholder="From..."
               isClearable
               isSearchable
-              cacheOptions
-              loadOptions={this.loadOptions}
+              isDisabled={this.state.options.length == 0}
+              option={this.state.options}
             />
           </Columns.Column>
           <Columns.Column size={3}>
-            <AsyncSelect
+            <Select
               placeholder="To..."
               isClearable
               isSearchable
-              cacheOptions
-              loadOptions={this.loadOptions}
+              isDisabled={this.state.options.length == 0}
+              option={this.state.options}
             />
           </Columns.Column>
           <Columns.Column size={2}>
@@ -71,7 +78,16 @@ class Home extends Component {
               Project Me!
               </Button>
           </Columns.Column>
-          <Columns.Column size={2} />
+          <Columns.Column size={}>
+            <Button
+              style={{ color: '#1D222C' }}
+              fullwidth
+              onClick={this.props.loadGraph}
+            >
+              Load Graph!
+              </Button>
+          </Columns.Column>
+          <Columns.Column size={1} />
         </Columns>
         <Content style={{ textAlign: 'center', color: '#7C7C7C' }}>
           <p>
