@@ -9,88 +9,53 @@ import os
 import pickle
 import codecs
 import functools
+import multiprocessing as mp
+import threading as mt
 #fileName=file in format of different tensorflow numbers for each data point,String of phrase
+
+
+
+class MutableBool():
+    def __init__(self, val):
+       self.val = val
+
+    def set(self, val):
+       self.val = val
 
 
 
 model_path = 'C:/Users/Owen/Desktop/GoogleNews-vectors-negative300.bin'
 
 
-def getMonth(month):
-    return dict[month]
+def generateModel():
+    if "serial_model.bin" in os.listdir():
+        with open("serial_model.bin", "rb") as sbdata:
+            model = pickle.load(sbdata)
+    else:
+        model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
+        binary_file = open('serial_model.bin',mode='wb')
+        serialize = pickle.dump(model, binary_file)
+        binary_file.close()
 
+    print("Model generated")
+    return model 
 
-print("test")
-
-with open("total.json",  mode = "r", encoding = "utf-8") as file:
-    data1 = json.load(file)
-
-data = []
-
-ids = set([])
-
-print("test")
-
-for elem in data1:
-    # if elem['id'] in ids:
-    #     continue
-    ids.add(elem['id'])
-    data.append(elem)
-
-print(len(data))
-print(len(data1))
-
-print(str(len(data)) + " data elements read")
-
-experiences = []
-i = 0
-for profile in data:
-    idd = profile['id']
-    for job in profile['jobs']:
-        experiences.append(((job['title']).lower(), idd))
-    # for job in profile['jobs']:
-    #     experiences.append(((job['company']+" "+job['title']).lower(), idd))
-    # for school in profile['schools']:
-    #     experiences.append(((school['degree']+" "+school['school_name']).lower(), idd))
-    i+=1
-
-shuffle(experiences)
-# experiences = experiences[:1000]
-
-print(str(len(experiences)) + " experiences generated")
-
-if "serial_model.bin" in os.listdir():
-    with open("serial_model.bin", "rb") as sbdata:
-        model = pickle.load(sbdata)
-else:
-    model = gensim.models.KeyedVectors.load_word2vec_format(model_path, binary=True)
-    binary_file = open('serial_model.bin',mode='wb')
-    serialize = pickle.dump(model, binary_file)
-    binary_file.close()
-
-print("Model generated")
-
-expVectors = []
-for phrase in experiences:
+def vectorizePhrase(phrase, model):
     sumVect = numpy.zeros(300)
     i = 0
-    for word in phrase[0].split(" "):
+    for word in phrase.split(" "):
         if i == 5:
-            break;
+            break
         try:
             cvector = model[word]
             sumVect = numpy.add(sumVect, cvector)
             i+=1
         except:
             pass
+    return sumVect
 
-
-    try:
-        expVectors.append((sumVect, phrase))
-    except:
-        pass
-
-print("Experiences matched with model.")
+def getMonth(month):
+    return dict[month]
 
 
 def groupIdByCluster(expVectors, clusters):
@@ -152,9 +117,10 @@ def UpdateMean(n,mean,item):
     return mean;
 
 def FindClusters(means,items, extra):
+    print("Finding clusters...")
     clusters = [[] for i in means] #Init clusters
     cluster_name = [[] for i in means]
-    print(items)
+    #print(items)
     for i, item in enumerate(items):
         #Classify item into a cluster
         index = Classify(means,item)
@@ -162,7 +128,8 @@ def FindClusters(means,items, extra):
         #CHANGE TO VECTOR
         cluster_name[index].append(extra[i])
         clusters[index].append(item)
-        print(i)
+        if i % 100 == 0:
+            print(i)
         # if i%100 == 0:
         #     print(str(i) + "clusters calculated")
 
@@ -173,87 +140,191 @@ def FindClusters(means,items, extra):
 def Classify(means,item):
     #Classify item to the mean with minimum distance
     
-    minimum = sys.maxsize;
-    index = -1;
+    minimum = sys.maxsize
+    index = -1
 
     for i in range(len(means)):
         #Find distance from item to mean
-        dis = EuclideanDistance(item,means[i]);
+        dis = EuclideanDistance(item,means[i])
 
         if(dis < minimum):
-            minimum = dis;
-            index = i;
+            minimum = dis
+            index = i
     
-    return index;
+    return index
+
+
+def calculateSubset(items, means, rangee, clusterSizes, belongsTo, noChange):
+    for i in range(rangee[0], rangee[1], 1):
+        item = items[i]
+        #Classify item into a cluster and update the
+        #corresponding means.
+        
+        index = Classify(means,item)
+
+        clusterSizes[index] += 1
+        means[index] = UpdateMean(clusterSizes[index],means[index],item)
+
+        #Item changed cluster
+        if index != belongsTo[i]:
+            noChange.set(False)
+            belongsTo[i] = index
+
+        # if i % 100 == 0:
+        #     print(i + " means calculated")
 
 def CalculateMeans(k,items,maxIterations=100000):
     #Find the minima and maxima for columns
-    cMin, cMax = FindColMinMax(items);
+    cMin, cMax = FindColMinMax(items)
     
     #Initialize means at random points
-    means = InitializeMeans(items,k,cMin,cMax);
+    means = InitializeMeans(items,k,cMin,cMax)
     
     #Initialize clusters, the array to hold
     #the number of items in a class
-    clusterSizes = [0 for i in means];
+    clusterSizes = [0 for i in means]
 
     #An array to hold the cluster an item is in
-    belongsTo = [0 for i in items];
+    belongsTo = [0 for i in items]
+
+    num_processes = mp.cpu_count()
 
     #Calculate means
     for e in range(maxIterations):
+        print(str(e) +" iterations")
         #If no change of cluster occurs, halt
+        # noChange = MutableBool(True)
+        # #ranges = [(i ,i + num_processes) for i in range(0, len(items), num_processes)]
+        # ranges = []
+
+        # proc_list = []
+
+
+        # partition_size = math.ceil((len(items)) / num_processes) + 1
+        # for x in range(0, num_processes):
+        #     from_ = int(x * partition_size)
+        #     to = min(int(from_ + partition_size - 1), len(items))
+        #     ranges.append((from_, to))
+
+        # for i in range(num_processes):
+        #     # print(ranges[i])
+        #     p = mt.Thread(target=calculateSubset, args=(items, means, ranges[i], clusterSizes, belongsTo, noChange))
+        #     proc_list.append(p)
+
+
+        # for p in proc_list:
+        #     p.start()            
+
+        # for p in proc_list:
+        #     p.join()
+
+        # if noChange.val:
+        #     break
+
         noChange = True;
         for i in range(len(items)):
-            item = items[i];
+            item = items[i]
             #Classify item into a cluster and update the
             #corresponding means.
         
-            index = Classify(means,item);
+            index = Classify(means,item)
 
-            clusterSizes[index] += 1;
-            means[index] = UpdateMean(clusterSizes[index],means[index],item);
+            clusterSizes[index] += 1
+            means[index] = UpdateMean(clusterSizes[index],means[index],item)
 
             #Item changed cluster
             if(index != belongsTo[i]):
-                noChange = False;
+                noChange = False
 
-            belongsTo[i] = index;
+            belongsTo[i] = index
 
-            if (i*e + i) > 0 and (i*e + i)%100 == 0:
-                print(str(i*e + i) + " means calculated")
+            if i % 100 == 0:
+                print(str(i) + " means calculated")
 
         #Nothing changed, return
         if(noChange):
-            break;
+            break
 
-    return means;
+    return means
 
-pureVec = [i[0] for i in expVectors]
+if __name__ ==  '__main__':
+    with open("total.json",  mode = "r", encoding = "utf-8") as file:
+        data1 = json.load(file)
 
-items = numpy.array(pureVec)
+    data = []
 
-k = 8;
+    ids = set([])
 
-means = CalculateMeans(k,items);
-print("Means calculated")
-clusters, exp = FindClusters(means,items, [i[1] for i in expVectors]);
-print("Clusters calculated")
-try: 
-    os.mkdir("ML Output Data")
-except:
-    pass
-os.chdir("ML Output Data")
+    print("Input Data read")
 
-with open('means.json', "w") as outfile:
-    json.dump(means, outfile)
+    for elem in data1:
+        # if elem['id'] in ids:
+        #     continue
+        ids.add(elem['id'])
+        data.append(elem)
 
-with open('clusters.json', "w") as outfile:
-    json.dump([[p.tolist() for p in i] for i in clusters], outfile)
+    print(len(data))
+    print(len(data1))
+
+    print(str(len(data)) + " data elements read")
+
+    experiences = []
+    i = 0
+    for profile in data:
+        idd = profile['id']
+        for job in profile['jobs']:
+            if (job['title'] != ''):
+                experiences.append(((job['title']).lower(), idd))
+        # for job in profile['jobs']:
+        #     experiences.append(((job['company']+" "+job['title']).lower(), idd))
+        # for school in profile['schools']:
+        #     experiences.append(((school['degree']+" "+school['school_name']).lower(), idd))
+        i+=1
+
+    shuffle(experiences)
+    experiences = experiences[:5000]
+
+    print(str(len(experiences)) + " experiences generated")
+
+    model = generateModel()
+
+    expVectors = []
+    for phrase in experiences:
+        vect = vectorizePhrase(phrase[0], model)
 
 
-with open('id_cluster.json', "w") as outfile:
-    json.dump(exp, outfile)
+        try:
+            expVectors.append((vect, phrase))
+        except:
+            pass
+
+    print("Experiences matched with model.")
+
+    pureVec = [i[0] for i in expVectors]
+
+    items = numpy.array(pureVec)
+
+    k = 32;
+
+    means = CalculateMeans(k,items);
+    print("Means calculated")
+    clusters, exp = FindClusters(means,items, [i[1] for i in expVectors]);
+    print("Clusters calculated")
+    try: 
+        os.mkdir("ML Output Data")
+    except:
+        pass
+    os.chdir("ML Output Data")
+
+    with open('means.json', "w") as outfile:
+        json.dump(means, outfile)
+
+    with open('clusters.json', "w") as outfile:
+        json.dump([[p.tolist() for p in i] for i in clusters], outfile)
+
+
+    with open('id_cluster.json', "w") as outfile:
+        json.dump(exp, outfile)
 
 
 # print(means);

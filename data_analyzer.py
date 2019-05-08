@@ -2,7 +2,7 @@ import json
 import os
 import datetime
 from pymagnitude import *
-
+import kMeansClustering as clustering
 
 
 default_time = 3
@@ -92,8 +92,52 @@ def vector_stuff():
 	print(vecs.distance("elephant_gun", "pizza_bagel"))
 
 
+def generateGraphData():
+	with open("total.json", mode = "r", encoding ="utf-8") as file:
+		data = json.load(file)
+
+	with open("ML Output Data/means.json", mode = "r", encoding ="utf-8") as file:
+		means = json.load(file)
+
+	model = clustering.generateModel()
+	clusters = [[] for i in means]
+
+
+	for resume in data:
+		for job, job2 in zip(resume['jobs'], resume['jobs'][1:]):
+			item = clustering.vectorizePhrase(job['title'], model)
+			item2 = clustering.vectorizePhrase(job2['title'], model)
+			index = clustering.Classify(means, item)
+			index2 = clustering.Classify(means, item2)
+			clusters[index].append((job, index2))
+			
+		if (len(resume['jobs']) > 0):
+			job = resume['jobs'][-1]
+			item = clustering.vectorizePhrase(job['title'], model)
+			index = clustering.Classify(means, item)
+			clusters[index].append((job, -1))
+
+	cluster_data = [[0, [0 for i in clusters]] for c in clusters]
+
+
+	for i,c in enumerate(clusters):
+		total_time = 0
+		for job, i2 in c:
+			total_time += job[time]
+			if i2 != -1:
+				cluster_data[i][1][i2] += 1
+		cluster_data[i][0] = total_time / len(c)
+
+
+	with open("graphData.json", mode = "w", encoding ="utf-8") as file:
+		means = json.dump(cluster_data, file)
+
+
+
+
 def main():
-	vector_stuff()
+	generateGraphData()
+	#vector_stuff()
 	#generate_titles()
 	# with open("total.json", "r") as file:
 	# 	data = json.load(file)
