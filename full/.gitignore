@@ -8,3 +8,5 @@ package-lock.json
 \.vscode/
 
 venv/
+
+serial_model.bin
