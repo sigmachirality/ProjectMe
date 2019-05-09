@@ -17,13 +17,13 @@ def search_jobs(request):
 
 def get_graph(request):
     return JsonResponse({
-        "nodes": Job.all()
+        "nodes": Job.all(),
         "edges": Edge.all()
     })
 
 
 def find_path(request):
-    //do some stuff
+    # do some stuff
     start_job = request.start
     end_job = request.end
     G = initialize_network()

@@ -25,7 +25,8 @@ class Command(BaseCommand):
         for index, cluster in enumerate(data):
             Job.objects.create(
                 id=index
-                name=cluster.name
+                name=cluster.clusterName
+                size=len(cluster.jobNames)
             )
 
         for start, cluster in enumerate(data):
