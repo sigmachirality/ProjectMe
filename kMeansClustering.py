@@ -193,33 +193,6 @@ def CalculateMeans(k,items,maxIterations=100000):
     for e in range(maxIterations):
         print(str(e) +" iterations")
         #If no change of cluster occurs, halt
-        # noChange = MutableBool(True)
-        # #ranges = [(i ,i + num_processes) for i in range(0, len(items), num_processes)]
-        # ranges = []
-
-        # proc_list = []
-
-
-        # partition_size = math.ceil((len(items)) / num_processes) + 1
-        # for x in range(0, num_processes):
-        #     from_ = int(x * partition_size)
-        #     to = min(int(from_ + partition_size - 1), len(items))
-        #     ranges.append((from_, to))
-
-        # for i in range(num_processes):
-        #     # print(ranges[i])
-        #     p = mt.Thread(target=calculateSubset, args=(items, means, ranges[i], clusterSizes, belongsTo, noChange))
-        #     proc_list.append(p)
-
-
-        # for p in proc_list:
-        #     p.start()            
-
-        # for p in proc_list:
-        #     p.join()
-
-        # if noChange.val:
-        #     break
 
         noChange = True;
         for i in range(len(items)):
@@ -326,9 +299,6 @@ if __name__ ==  '__main__':
     with open('id_cluster.json', "w") as outfile:
         json.dump(exp, outfile)
 
-
-# print(means);
-# print(clusters);
 
 
 
