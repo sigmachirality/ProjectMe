@@ -15,12 +15,12 @@ class App extends Component {
     this.goToGraph = this.goToGraph.bind(this);
   }
 
-  goToResults() {
-    this.setState({ view: "results", cards: [] });
+  goToHome() {
+    this.setState({ view: "home", cards: [] });
   }
 
-  goToHome(cards) {
-    this.setState({ view: "home", cards: cards });
+  goToResults(cards) {
+    this.setState({ view: "results", cards: cards });
   }
 
   goToGraph() {
@@ -38,7 +38,9 @@ class App extends Component {
         );
       case "graph":
         return (
-          <Graph />
+          <Graph
+            onHome={this.goToHome}
+          />
         );
       default:
         return (
