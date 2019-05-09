@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import 'react-bulma-components/dist/react-bulma-components.min.css';
 import logo from '../assets/logo.png'
-import { Container, Columns, Navbar } from 'react-bulma-components';
+import { Navbar } from 'react-bulma-components';
 import { Graph as GraphDisplay } from "react-d3-graph";
 
 class Graph extends Component {
@@ -12,12 +12,26 @@ class Graph extends Component {
       data: {
         nodes: [{ id: 'Harry' }, { id: 'Sally' }, { id: 'Alice' }],
         links: [{ source: 'Harry', target: 'Sally' }, { source: 'Harry', target: 'Alice' }]
+      },
+      config: {
+        directed: true,
+        nodeHighlightBehavior: true,
+        height: window.innerHeight,
+        width: window.innerWidth,
+        node: {
+          color: 'white',
+          fontColor: 'white',
+          fontSize: 30,
+          size: 400,
+          highlightFontSize: 40,
+          highlightFontWeight: "strong",
+          highlightStrokeColor: 'yellow'
+        }
       }
     };
   }
 
   render() {
-    //TODO: Use noun project API to dynamically generate things
     return (
       <div>
         <Navbar
@@ -28,7 +42,7 @@ class Graph extends Component {
           }}
         >
           <Navbar.Brand>
-            <Navbar.Item>
+            <Navbar.Item onClick={this.props.onHome}>
               <img
                 src={logo}
                 alt="ProjectMe"
@@ -40,12 +54,12 @@ class Graph extends Component {
             </Navbar.Item>
           </Navbar.Brand>
         </Navbar>
-        <Container breakpoint="fullhd">
-          <GraphDisplay
-            id="jobGraph"
-            data={this.state.data}
-          />
-        </Container>
+        <GraphDisplay
+          id="jobGraph"
+          ref="graph"
+          data={this.state.data}
+          config={this.state.config}
+        />
       </div>
     );
   }

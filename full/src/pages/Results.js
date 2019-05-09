@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import 'react-bulma-components/dist/react-bulma-components.min.css';
 import logo from '../assets/logo.png'
-import { Card, Container, Columns, Content, Image, Media } from 'react-bulma-components';
+import { Card, Container, Columns, Content, Image, Media, Navbar } from 'react-bulma-components';
 
 class Result extends Component {
 
@@ -27,6 +27,26 @@ class Result extends Component {
     );
     return (
       <div>
+        <Navbar
+          style={{
+            height: "100px",
+            backgroundColor: "#1D222C",
+            borderBottom: "2px solid #7C7C7C"
+          }}
+        >
+          <Navbar.Brand>
+            <Navbar.Item onClick={this.props.onHome}>
+              <img
+                src={logo}
+                alt="ProjectMe"
+                style={{
+                  width: "171px",
+                  maxHeight: "100px"
+                }}
+              />
+            </Navbar.Item>
+          </Navbar.Brand>
+        </Navbar>
         <Container breakpoint="fullhd">
           <Columns>
             <Columns.Column size={4}>
