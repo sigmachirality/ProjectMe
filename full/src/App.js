@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Home from './pages/Home';
 import Results from './pages/Results';
+import Graph from './pages/Graph';
 
 class App extends Component {
   constructor() {
@@ -23,7 +24,7 @@ class App extends Component {
   }
 
   goToGraph() {
-    this.setState({ view: "graph" });
+    this.setState({ view: "graph", cards: [] });
   }
 
   render() {
@@ -44,6 +45,7 @@ class App extends Component {
           <Home
             onSearch={this.goToResults}
             onGraph={this.goToGraph}
+            loadGraph={this.goToGraph}
           />
         );
     }

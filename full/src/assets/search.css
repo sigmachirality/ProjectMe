@@ -1,3 +1,7 @@
+html, body {
+    background-color: #1D222C;
+}
+
 .logo {
     display: block;
     width: 30vw;
