@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import 'react-bulma-components/dist/react-bulma-components.min.css';
 import logo from '../assets/logo.png'
-import { Container, Columns, Navbar } from 'react-bulma-components';
+import { Navbar } from 'react-bulma-components';
 import { Graph as GraphDisplay } from "react-d3-graph";
 
 class Graph extends Component {

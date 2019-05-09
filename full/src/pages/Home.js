@@ -38,6 +38,9 @@ class Home extends Component {
     Axios.get("/path?from=" + this.state.from + "&to=" + this.state.to)
       .then((response) => {
         this.props.onSearch(response);
+      })
+      .catch(() => {
+        this.props.onSearch({});
       });
   }
 
@@ -45,7 +48,6 @@ class Home extends Component {
     return (
       <Container is-desktop>
         <Image
-          title="Check me out on Github!"
           src={logo}
           className="logo"
         />
