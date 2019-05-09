@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import 'react-bulma-components/dist/react-bulma-components.min.css';
 import logo from '../assets/logo.png'
-import { Navbar } from 'react-bulma-components';
+import { Navbar, Container } from 'react-bulma-components';
 import { Graph as GraphDisplay } from "react-d3-graph";
 
 class Graph extends Component {
@@ -15,14 +15,19 @@ class Graph extends Component {
         collapsible: true,
         directed: true,
         nodeHighlightBehavior: true,
-        height: window.innerHeight * .75,
-        width: window.innerWidth * .75,
+        height: window.innerHeight * .9,
+        width: window.innerWidth * .9,
         d3: {
-          gravity: -1000,
-          linkLength: 300
+          gravity: -2000,
+          linkLength: 1000
         },
         link: {
-          labelProperty: 'connections'
+          color: '#7C7C7C',
+          labelProperty: 'count',
+          fontColor: 'white',
+          fontSize: 15,
+          renderLabel: true,
+          semanticStrokeWidth: true
         },
         node: {
           labelProperty: 'name',
@@ -61,12 +66,14 @@ class Graph extends Component {
             </Navbar.Item>
           </Navbar.Brand>
         </Navbar>
-        <GraphDisplay
-          id="jobGraph"
-          ref="graph"
-          data={this.state.data}
-          config={this.state.config}
-        />
+        <Container>
+          <GraphDisplay
+            id="jobGraph"
+            ref="graph"
+            data={this.state.data}
+            config={this.state.config}
+          />
+        </Container>
       </div>
     );
   }

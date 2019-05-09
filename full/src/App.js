@@ -32,7 +32,7 @@ class App extends Component {
         edges = edges.map((edge) => ({
           source: edge.fields.start,
           target: edge.fields.end,
-          connections: 1 / edge.fields.connections
+          count: edge.fields.count
         }));
         nodes = nodes.filter((node) => node.fields.name !== "EMPTY").map((node) => ({
           id: node.pk,
