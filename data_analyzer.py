@@ -150,7 +150,7 @@ def generateGraphData():
 	for i,c in enumerate(clusters):
 		total_time = 0
 		for job, i2 in c:
-			time = math.abs(job['time'])
+			time = abs(int(job['time']))
 			total_time += time
 			if i2 != -1:
 				cluster_data[i][1][i2] += 1
