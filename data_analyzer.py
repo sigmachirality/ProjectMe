@@ -102,20 +102,47 @@ def generateGraphData():
 	model = clustering.generateModel()
 	clusters = [[] for i in means]
 
+	last_item = None
+	last_index = None
 
+	ctr = 0
 	for resume in data:
 		for job, job2 in zip(resume['jobs'], resume['jobs'][1:]):
-			item = clustering.vectorizePhrase(job['title'], model)
+
+
+
+			if (last_item is None):
+				item = clustering.vectorizePhrase(job['title'], model)
+				index = clustering.Classify(means, item)
+			else:
+				item = last_item
+				index = last_index
+
 			item2 = clustering.vectorizePhrase(job2['title'], model)
-			index = clustering.Classify(means, item)
 			index2 = clustering.Classify(means, item2)
+
+			last_item = item2
+			last_index = index2
+
 			clusters[index].append((job, index2))
-			
-		if (len(resume['jobs']) > 0):
+			ctr += 1
+			if (ctr % 100 == 0):
+				print(ctr)
+
+		if (len(resume['jobs']) == 1):
 			job = resume['jobs'][-1]
 			item = clustering.vectorizePhrase(job['title'], model)
 			index = clustering.Classify(means, item)
 			clusters[index].append((job, -1))
+			ctr += 1
+			if (ctr % 100 == 0):
+				print(ctr)
+		elif (len(resume['jobs']) > 1):
+			job = resume['jobs'][-1]
+			clusters[last_index].append((job, -1))
+			ctr += 1
+			if (ctr % 100 == 0):
+				print(ctr)
 
 	cluster_data = [[0, [0 for i in clusters]] for c in clusters]
 
@@ -123,10 +150,14 @@ def generateGraphData():
 	for i,c in enumerate(clusters):
 		total_time = 0
 		for job, i2 in c:
-			total_time += job[time]
+			time = math.abs(job['time'])
+			total_time += time
 			if i2 != -1:
 				cluster_data[i][1][i2] += 1
-		cluster_data[i][0] = total_time / len(c)
+		if len(c) != 0:
+			cluster_data[i][0] = total_time / len(c)
+		else:
+			cluster_data[i][0] = 0
 
 
 	with open("graphData.json", mode = "w", encoding ="utf-8") as file:
