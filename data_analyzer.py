@@ -180,7 +180,7 @@ def generateGraphData():
 			if (ctr % 100 == 0):
 				print(ctr)
 
-	cluster_data = [[0, [0 for i in clusters]] for c in clusters]
+	cluster_data = [{'avgTime': 0, 'numConnections': [0 for i in clusters], 'jobNames': [i[0]['title'] for i in c]} for c in clusters]
 
 
 	for i,c in enumerate(clusters):
@@ -189,11 +189,9 @@ def generateGraphData():
 			time = abs(int(job['time']))
 			total_time += time
 			if i2 != -1:
-				cluster_data[i][1][i2] += 1
+				cluster_data[i]['numConnections'][i2] += 1
 		if len(c) != 0:
-			cluster_data[i][0] = total_time / len(c)
-		else:
-			cluster_data[i][0] = 0
+			cluster_data[i]['avgTime'] = total_time / len(c)
 
 
 	with open("graphData.json", mode = "w", encoding ="utf-8") as file:
@@ -203,13 +201,13 @@ def generateGraphData():
 
 
 def main():
-	gen_times2()
-	#generateGraphData()
+	#gen_times2()
+	generateGraphData()
 	#vector_stuff()
 	#generate_titles()
 	# with open("total.json", "r") as file:
 	# 	data = json.load(file)
 	# 	print(data[0])
 
-if __name__ = '__main__':
+if __name__ == '__main__':
 	main()
