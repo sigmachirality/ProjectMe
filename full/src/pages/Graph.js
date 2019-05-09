@@ -6,26 +6,33 @@ import { Graph as GraphDisplay } from "react-d3-graph";
 
 class Graph extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    console.log(this.props.data);
     this.state = {
-      data: {
-        nodes: [{ id: 'Harry' }, { id: 'Sally' }, { id: 'Alice' }],
-        links: [{ source: 'Harry', target: 'Sally' }, { source: 'Harry', target: 'Alice' }]
-      },
+      data: this.props.data,
       config: {
+        collapsible: true,
         directed: true,
         nodeHighlightBehavior: true,
-        height: window.innerHeight,
-        width: window.innerWidth,
+        height: window.innerHeight * .75,
+        width: window.innerWidth * .75,
+        d3: {
+          gravity: -1000,
+          linkLength: 300
+        },
+        link: {
+          labelProperty: 'connections'
+        },
         node: {
+          labelProperty: 'name',
           color: 'white',
           fontColor: 'white',
-          fontSize: 30,
+          fontSize: 15,
           size: 400,
-          highlightFontSize: 40,
+          highlightFontSize: 18,
           highlightFontWeight: "strong",
-          highlightStrokeColor: 'yellow'
+          highlightStrokeColor: 'lightblue'
         }
       }
     };

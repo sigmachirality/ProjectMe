@@ -1,6 +1,8 @@
 from django.http import JsonResponse
+from django.core import serializers
 import networkx as nx
 from home.models import Job, Edge
+import json
 
 
 def initialize_network():
@@ -16,9 +18,11 @@ def search_jobs(request):
 
 
 def get_graph(request):
+    nodes = serializers.serialize('json', Job.objects.all())
+    edges = serializers.serialize('json', Edge.objects.all())
     return JsonResponse({
-        "nodes": Job.all(),
-        "edges": Edge.all()
+        "nodes": json.loads(nodes),
+        "edges": json.loads(edges)
     })
 
 
