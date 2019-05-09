@@ -195,14 +195,28 @@ def generateGraphData():
 
 
 	with open("graphData.json", mode = "w", encoding ="utf-8") as file:
-		means = json.dump(cluster_data, file)
+		json.dump(cluster_data, file)
 
+
+def insertNames():
+	with open("cluster_names.txt", "r") as file:
+		names = file.readlines()
+
+	with open("graphData.json", mode = "r", encoding ="utf-8") as file:
+		cluster_data = json.load(file)
+
+	for i, c in enumerate(cluster_data):
+		c['name'] = names[i].strip()
+
+	with open("graphData.json", mode = "w", encoding ="utf-8") as file:
+		json.dump(cluster_data, file)
 
 
 
 def main():
+	insertNames()
 	#gen_times2()
-	generateGraphData()
+	#generateGraphData()
 	#vector_stuff()
 	#generate_titles()
 	# with open("total.json", "r") as file:
