@@ -19,12 +19,12 @@ class Home extends Component {
     }
     this.loadOptions = this.loadOptions.bind(this);
     this.loadCards = this.loadOptions.bind(this);
-    loadOptions((response) => this.setState({
+    /*this.loadOptions((response) => this.setState({
       options: response.map((obj) => ({
         value: obj.id,
         label: obj.name
       }))
-    }));
+    }));*/
   }
 
   loadOptions(callback) {
@@ -56,7 +56,7 @@ class Home extends Component {
               placeholder="From..."
               isClearable
               isSearchable
-              isDisabled={this.state.options.length == 0}
+              isDisabled={this.state.options.length === 0}
               option={this.state.options}
             />
           </Columns.Column>
@@ -65,7 +65,7 @@ class Home extends Component {
               placeholder="To..."
               isClearable
               isSearchable
-              isDisabled={this.state.options.length == 0}
+              isDisabled={this.state.options.length === 0}
               option={this.state.options}
             />
           </Columns.Column>
@@ -78,7 +78,7 @@ class Home extends Component {
               Project Me!
               </Button>
           </Columns.Column>
-          <Columns.Column size={}>
+          <Columns.Column size={2}>
             <Button
               style={{ color: '#1D222C' }}
               fullwidth
