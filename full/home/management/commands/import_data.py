@@ -1,3 +1,5 @@
+import os
+
 from django.core.management.base import BaseCommand, CommandError
 from ...models import Job, Edge
 import json
@@ -20,24 +22,26 @@ class Command(BaseCommand):
                 "The file '{}' does not exist!".format(filename))
 
         with open(filename, "r") as f:
-            data = json.load(f.read())
+            data = json.load(f)
 
         for index, cluster in enumerate(data):
-            Job.objects.create(
-                id=index,
-                name=cluster.clusterName,
-                size=len(cluster.jobNames)
-            )
+            print(cluster.keys())
+            if len(cluster["name"]) > 0:
+                Job.objects.create(
+                    id=index,
+                    name=cluster["name"],
+                    size=len(cluster["jobNames"])
+                )
 
         for start, cluster in enumerate(data):
-            for end, connection in enumerate(cluster.numConnections):
+            for end, connection in enumerate(cluster["numConnections"]):
                 if connection is not 0:
                     start_node = Job.objects.get(id=start)
                     end_node = Job.objects.get(id=end)
                     Edge.objects.create(
                         start=start_node,
                         end=end_node,
-                        years=data[start].avgTime,
+                        years=data[start]["avgTime"],
                         count=connection
                     )
 
