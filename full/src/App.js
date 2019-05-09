@@ -25,7 +25,7 @@ class App extends Component {
   }
 
   goToGraph() {
-    Axios.get("http://127.0.0.1:8000/graph")
+    Axios.get('/graph')
       .then((response) => {
         let edges = response.data.edges;
         let nodes = response.data.nodes;
