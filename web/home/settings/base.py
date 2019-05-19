@@ -61,9 +61,9 @@ DATABASES = {
    'default' : {
       'ENGINE' : 'django_mongodb_engine',
       'NAME' : 'nodes',
-      'HOST' : DATABASE_URL,
-      'USER' : DATABASE_USER,
-      'PASSWORD' : DATABASE_PASS
+      'HOST' : PM_DATABASE_URL,
+      'USER' : PM_DATABASE_USER,
+      'PASSWORD' : PM_DATABASE_PASS
    }
 }
 
