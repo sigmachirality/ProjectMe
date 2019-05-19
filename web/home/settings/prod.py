@@ -1,7 +1,6 @@
 '''Use this for production'''
 
 from .base import *
-import dj_database_url
 
 DEBUG = False
 ALLOWED_HOSTS += ['.career-consult.herokuapp.com']
@@ -20,7 +19,3 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
-if 'DATABASE_URL' in os.environ:
-    import dj_database_url
-    DATABASES = {'default': dj_database_url.config()}

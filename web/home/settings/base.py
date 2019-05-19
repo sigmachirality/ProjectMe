@@ -57,6 +57,16 @@ TEMPLATES = [
     },
 ]
 
+DATABASES = {
+   'default' : {
+      'ENGINE' : 'django_mongodb_engine',
+      'NAME' : 'nodes',
+      'HOST' : DATABASE_URL,
+      'USER' : DATABASE_USER,
+      'PASSWORD' : DATABASE_PASS
+   }
+}
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
